@@ -23,13 +23,13 @@ export default class RecipeList extends Component {
     createButton = (page,type) => {
         let cn = `btn-inline results__btn--${type}`;
         let ims = `img/icons.svg#icon-triangle-${type === 'prev' ? 'left' : 'right'}`
-        return (
+        return [
     <button className={cn} onClick={this.onPaginationButton} data-goto={type === 'prev' ? page - 1 : page + 1}>
         <span>Page {type === 'prev' ? page - 1 : page + 1}</span>
         <svg className="search__icon">
             <use href={ims}></use>
         </svg>
-    </button>)};
+        </button>]};
 
 renderButtons = () => {
     const pages = Math.ceil(this.props.recipes.length / this.state.resPerPage);
@@ -38,13 +38,14 @@ renderButtons = () => {
     if (this.state.page === 1 && pages > 1) {
         button = this.createButton(this.state.page, 'next');
     } else if (this.state.page < pages) {
-        button = (
-            this.createButton(this.state.page, 'prev'),
-            this.createButton(this.state.page, 'next')
-        );
+        button = [
+            ...this.createButton(this.state.page, 'prev'),
+            ...this.createButton(this.state.page, 'next')
+        ];
     } else if (this.state.page === pages && pages > 1) {
         button = this.createButton(this.state.page, 'prev');
     }
+    console.log(button);
     return button;
 };
 
@@ -69,7 +70,9 @@ renderButtons = () => {
                 
             </ul>
             {!_.isEmpty(this.props.recipes) && <div className="results__pages">
-                {this.renderButtons()}
+                {this.renderButtons().map((el) => {
+                    return el;
+                })}
                 </div>
                 }
         </div>
