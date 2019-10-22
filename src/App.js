@@ -12,7 +12,8 @@ class App extends Component{
 
   state = {
     recipes:[],
-    showLoader:false
+    showLoader:false,
+    id:0
   }
 
   componentDidMount() {
@@ -30,14 +31,22 @@ class App extends Component{
     e.target.elements[0].value = '';
   }
 
+  onRecipeClick = (id) => {
+    this.setState(() => ({id}));
+  }
+
   render(){
     return (
         <div className="container">
           <Header
             onFormSubmit={this.onFormSubmit}
           />
-          {<RecipeList recipes={this.state.recipes} showLoader={this.state.showLoader} />}
-          <Recipe />
+          {<RecipeList 
+          recipes={this.state.recipes} 
+          showLoader={this.state.showLoader}
+          onRecipeClick={this.onRecipeClick}
+          />}
+          <Recipe recipe={this.state.recipes[this.state.id]}/>
           <ShoppingList/>
       </div>
     );

@@ -1,13 +1,15 @@
-import React, { Component } from 'react'
+import React, { Component,Fragment } from 'react'
 
 export default class Recipe extends Component {
     render() {
         return (
-            <div className="recipe">            
-            <figure className="recipe__fig">
-                <img src="img/test-1.jpg" alt="Tomato" className="recipe__img"/>
+            <div className="recipe">
+                       
+            {this.props.recipe && <Fragment>
+                 <figure className="recipe__fig">
+                <img src={this.props.recipe.recipe.image} alt="Tomato" className="recipe__img"/>
                 <h1 className="recipe__title">
-                    <span>Pasta with tomato cream sauce</span>
+                    <span>{this.props.recipe.recipe.label}</span>
                 </h1>
             </figure>
             <div className="recipe__details">
@@ -140,6 +142,7 @@ export default class Recipe extends Component {
 
                 </a>
             </div>
+            </Fragment>}
         </div>
         )
     }

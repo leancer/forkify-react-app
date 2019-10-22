@@ -24,7 +24,7 @@ export default class RecipeList extends Component {
         let cn = `btn-inline results__btn--${type}`;
         let ims = `img/icons.svg#icon-triangle-${type === 'prev' ? 'left' : 'right'}`
         return [
-    <button className={cn} onClick={this.onPaginationButton} data-goto={type === 'prev' ? page - 1 : page + 1}>
+    <button  className={cn} onClick={this.onPaginationButton} data-goto={type === 'prev' ? page - 1 : page + 1}>
         <span>Page {type === 'prev' ? page - 1 : page + 1}</span>
         <svg className="search__icon">
             <use href={ims}></use>
@@ -45,7 +45,6 @@ renderButtons = () => {
     } else if (this.state.page === pages && pages > 1) {
         button = this.createButton(this.state.page, 'prev');
     }
-    console.log(button);
     return button;
 };
 
@@ -64,8 +63,13 @@ renderButtons = () => {
             }
             <ul className="results__list">
 
-                {this.props.recipes.slice(start, end).map(({recipe}) => {
-                   return <RecipeListItem key={recipe.uri.split('#')[1]} recipe={recipe} />
+                {this.props.recipes.slice(start, end).map(({recipe},index) => {
+                   return <RecipeListItem 
+                   key={index} 
+                   id={index} 
+                   recipe={recipe}
+                   onRecipeClick={this.props.onRecipeClick}
+                    />
                 })}   
                 
             </ul>

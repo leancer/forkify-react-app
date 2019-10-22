@@ -4,7 +4,7 @@ export default class RecipeListItem extends Component {
     render() {
         return (
             <li>
-                    <a className="results__link " href="#23456">
+                    <a className="results__link " href="#" onClick={this.props.onRecipeClick.bind(this,this.props.id)}>
                         <figure className="results__fig">
                             <img src={this.props.recipe.image} alt="Test" />
                         </figure>
