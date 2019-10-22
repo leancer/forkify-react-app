@@ -132,9 +132,9 @@ export default class Recipe extends Component {
                 <h2 className="heading-2">How to cook it</h2>
                 <p className="recipe__directions-text">
                     This recipe was carefully designed and tested by
-                    <span className="recipe__by">The Pioneer Woman</span>. Please check out directions at their website.
+                    <span className="recipe__by"> {this.props.recipe.recipe.source}</span>. Please check out directions at their website.
                 </p>
-                <a className="btn-small recipe__btn" href="http://thepioneerwoman.com/cooking/pasta-with-tomato-cream-sauce/" target="_blank">
+                <a className="btn-small recipe__btn" href={this.props.recipe.recipe.url} rel="noopener noreferrer" target="_blank">
                     <span>Directions</span>
                     <svg className="search__icon">
                         <use href="img/icons.svg#icon-triangle-right"></use>

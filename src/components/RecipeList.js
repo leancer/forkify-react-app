@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import _ from 'lodash';
 import RecipeListItem from './RecipeListItem'
-import { S_IFSOCK } from 'constants';
 
 export default class RecipeList extends Component {
 
@@ -51,6 +50,12 @@ renderButtons = () => {
     render() {
         let start = (this.state.page - 1) * this.state.resPerPage;
         let end = this.state.page * this.state.resPerPage;
+        let modifyList = [];
+        if(this.props.recipes){
+            for (let index = start; index < end; index++) {
+                modifyList.push({...this.props.recipes[index],id:index});  
+            }
+        }
         return (
             <div className="results">
             {this.props.showLoader && 
@@ -63,10 +68,10 @@ renderButtons = () => {
             }
             <ul className="results__list">
 
-                {this.props.recipes.slice(start, end).map(({recipe},index) => {
+                {!_.isEmpty(this.props.recipes) && modifyList.map(({recipe,id},index) => {
                    return <RecipeListItem 
                    key={index} 
-                   id={index} 
+                   id={id}
                    recipe={recipe}
                    onRecipeClick={this.props.onRecipeClick}
                     />
