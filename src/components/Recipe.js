@@ -1,11 +1,82 @@
 import React, { Component,Fragment } from 'react'
 
 export default class Recipe extends Component {
+
+    state = {
+        ingredient:[]
+    }
+
+    parseIngredients() {
+        const { ingredientLines } = this.props.recipe.recipe;
+        const unitsLong = ['tablespoons', 'tablespoon', 'ounces', 'ounce', 'teaspoons', 'teaspoon', 'cups', 'pounds'];
+        const unitsShort = ['tbsp', 'tbsp', 'oz', 'oz', 'tsp', 'tsp', 'cup', 'pound'];
+        const units = [...unitsShort, 'kg', 'g'];
+
+        const newIng = ingredientLines.map((el) => {
+            
+            let ingredient = el.toLowerCase();
+            unitsLong.forEach((unit, i) => {
+                ingredient = ingredient.replace(unit, unitsShort[i]);
+            });
+
+            ingredient = ingredient.replace(/ *\([^)]*\) */g, ' ');
+
+            const arrIng = ingredient.split(' ');
+            const unitIndex = arrIng.findIndex(el2 => units.includes(el2));
+
+            let objIng;
+            if (unitIndex > -1) {
+                // There is a unit
+                // Ex. 4 1/2 cups, arrCount is [4, 1/2] --> eval("4+1/2") --> 4.5
+                // Ex. 4 cups, arrCount is [4]
+                const arrCount = arrIng.slice(0, unitIndex);
+                
+                let count;
+                if (arrCount.length === 1) {
+                    count = eval(arrIng[0].replace('-', '+'));
+                } else {
+                    count = eval(arrIng.slice(0, unitIndex).join('+'));
+                }
+
+                objIng = {
+                    count,
+                    unit: arrIng[unitIndex],
+                    ingredient: arrIng.slice(unitIndex + 1).join(' ')
+                };
+
+            } else if (parseInt(arrIng[0], 10)) {
+                // There is NO unit, but 1st element is number
+                objIng = {
+                    count: parseInt(arrIng[0], 10),
+                    unit: '',
+                    ingredient: arrIng.slice(1).join(' ')
+                }
+            } else if (unitIndex === -1) {
+                // There is NO unit and NO number in 1st position
+                objIng = {
+                    count: 1,
+                    unit: '',
+                    ingredient
+                }
+            }
+
+            return objIng;
+        })
+
+        this.setState({
+            ingredient:newIng
+        })
+        
+    }
+    componentDidMount(){
+        this.parseIngredients();
+    }
+
+
     render() {
         return (
-            <div className="recipe">
                        
-            {this.props.recipe && <Fragment>
+             <Fragment>
                  <figure className="recipe__fig">
                 <img src={this.props.recipe.recipe.image} alt="Tomato" className="recipe__img"/>
                 <h1 className="recipe__title">
@@ -142,8 +213,7 @@ export default class Recipe extends Component {
 
                 </a>
             </div>
-            </Fragment>}
-        </div>
+            </Fragment>
         )
     }
 }

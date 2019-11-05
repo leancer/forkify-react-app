@@ -2,9 +2,10 @@ import React, { Component } from 'react'
 //results__link--active
 export default class RecipeListItem extends Component {
     render() {
+        let cn = `results__link ${this.props.isCurrent?'results__link--active':''}`
         return (
             <li>
-                    <a className="results__link " href="#" onClick={this.props.onRecipeClick.bind(this,this.props.id)}>
+                    <a className={cn} href="#" onClick={this.props.onRecipeClick.bind(this,this.props.id)}>
                         <figure className="results__fig">
                             <img src={this.props.recipe.image} alt="Test" />
                         </figure>

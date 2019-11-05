@@ -1,12 +1,9 @@
 import React,{ Component } from 'react';
 import axios from 'axios';
-import dotenv from 'dotenv';
 import Header from './components/Header';
 import RecipeList from './components/RecipeList';
 import Recipe from './components/Recipe';
 import ShoppingList from './components/ShoppingList';
-
-dotenv.config();
 
 class App extends Component{
 
@@ -44,9 +41,12 @@ class App extends Component{
           {<RecipeList 
           recipes={this.state.recipes} 
           showLoader={this.state.showLoader}
+          currentId={this.state.id}
           onRecipeClick={this.onRecipeClick}
           />}
-          <Recipe recipe={this.state.recipes[this.state.id]}/>
+          <div className="recipe">
+            {(this.state.recipes.length !== 0) && <Recipe recipe={this.state.recipes[this.state.id]}/>}
+          </div>
           <ShoppingList/>
       </div>
     );

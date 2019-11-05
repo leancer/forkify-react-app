@@ -72,6 +72,7 @@ renderButtons = () => {
                    return <RecipeListItem 
                    key={index} 
                    id={id}
+                   isCurrent={id === this.props.currentId}
                    recipe={recipe}
                    onRecipeClick={this.props.onRecipeClick}
                     />
