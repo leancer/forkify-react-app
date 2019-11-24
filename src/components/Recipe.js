@@ -1,9 +1,18 @@
 import React, { Component,Fragment } from 'react'
+import IngredientList from './IngredientList';
+import uniqid from 'uniqid';
 
 export default class Recipe extends Component {
 
     state = {
-        ingredient:[]
+        ingredient:[],
+        serving:4
+    }
+
+    calcTime() {
+        const numIng = this.state.ingredient.length;
+        const periods = Math.ceil(numIng / 3);
+        return periods * 15;
     }
 
     parseIngredients() {
@@ -68,6 +77,33 @@ export default class Recipe extends Component {
         })
         
     }
+
+    updateServing = type => e =>{
+
+        const newServings = type === 'dec' ? this.state.serving - 1 : this.state.serving + 1;
+
+        if(newServings !== 0){
+        // Ingredients
+        this.state.ingredient.forEach(ing => {
+            ing.count *= (newServings / this.state.serving);
+        });
+
+        this.setState({serving:newServings});
+        }
+    }
+
+    handleClickShopping(){
+        
+        let newing = this.state.ingredient.map((el) => {
+            return {
+                ...el,
+                id:uniqid()
+            }
+        })
+
+        this.props.onChangeShoppingList(newing);
+    }
+
     componentDidMount(){
         this.parseIngredients();
     }
@@ -88,23 +124,23 @@ export default class Recipe extends Component {
                     <svg className="recipe__info-icon">
                         <use href="img/icons.svg#icon-stopwatch"></use>
                     </svg>
-                    <span className="recipe__info-data recipe__info-data--minutes">45</span>
+        <span className="recipe__info-data recipe__info-data--minutes">{this.calcTime()}</span>
                     <span className="recipe__info-text"> minutes</span>
                 </div>
                 <div className="recipe__info">
                     <svg className="recipe__info-icon">
                         <use href="img/icons.svg#icon-man"></use>
                     </svg>
-                    <span className="recipe__info-data recipe__info-data--people">4</span>
+        <span className="recipe__info-data recipe__info-data--people">{this.state.serving}</span>
                     <span className="recipe__info-text"> servings</span>
 
                     <div className="recipe__info-buttons">
-                        <button className="btn-tiny">
+                        <button className="btn-tiny" onClick={this.updateServing('dec')}>
                             <svg>
                                 <use href="img/icons.svg#icon-circle-with-minus"></use>
                             </svg>
                         </button>
-                        <button className="btn-tiny">
+                        <button className="btn-tiny" onClick={this.updateServing('inc')}>
                             <svg>
                                 <use href="img/icons.svg#icon-circle-with-plus"></use>
                             </svg>
@@ -119,85 +155,24 @@ export default class Recipe extends Component {
                 </button>
             </div>
 
-
-
             <div className="recipe__ingredients">
                 <ul className="recipe__ingredient-list">
-                    <li className="recipe__item">
-                        <svg className="recipe__icon">
-                            <use href="img/icons.svg#icon-check"></use>
-                        </svg>
-                        <div className="recipe__count">1000</div>
-                        <div className="recipe__ingredient">
-                            <span className="recipe__unit">g</span>
-                            pasta
-                        </div>
-                    </li>
 
-                    <li className="recipe__item">
-                        <svg className="recipe__icon">
-                            <use href="img/icons.svg#icon-check"></use>
-                        </svg>
-                        <div className="recipe__count">1/2</div>
-                        <div className="recipe__ingredient">
-                            <span className="recipe__unit">cup</span>
-                            ricotta cheese
-                        </div>
-                    </li>
-
-                    <li className="recipe__item">
-                        <svg className="recipe__icon">
-                            <use href="img/icons.svg#icon-check"></use>
-                        </svg>
-                        <div className="recipe__count">1</div>
-                        <div className="recipe__ingredient">
-                            <span className="recipe__unit"></span>
-                            can of tomatoes, whole or crushed
-                        </div>
-                    </li>
-
-
-                    <li className="recipe__item">
-                        <svg className="recipe__icon">
-                            <use href="img/icons.svg#icon-check"></use>
-                        </svg>
-                        <div className="recipe__count">1</div>
-                        <div className="recipe__ingredient">
-                            <span className="recipe__unit"></span>
-                            can tuna packed in olive oil
-                        </div>
-                    </li>
-
-                    <li className="recipe__item">
-                        <svg className="recipe__icon">
-                            <use href="img/icons.svg#icon-check"></use>
-                        </svg>
-                        <div className="recipe__count">1/2</div>
-                        <div className="recipe__ingredient">
-                            <span className="recipe__unit">cup</span>
-                            grated parmesan cheese
-                        </div>
-                    </li>
-
-                    <li className="recipe__item">
-                        <svg className="recipe__icon">
-                            <use href="img/icons.svg#icon-check"></use>
-                        </svg>
-                        <div className="recipe__count">1/4</div>
-                        <div className="recipe__ingredient">
-                            <span className="recipe__unit">cup</span>
-                            fresh basil, chopped or torn
-                        </div>
-                    </li>
+                    {this.state.ingredient.map((el,index)=> {
+                        return <IngredientList ingredient={el} key={index}/>
+                    })}
+                
                 </ul>
 
-                <button className="btn-small recipe__btn">
+                <button className="btn-small recipe__btn" onClick={this.handleClickShopping.bind(this)}>
                     <svg className="search__icon">
                         <use href="img/icons.svg#icon-shopping-cart"></use>
                     </svg>
                     <span>Add to shopping list</span>
                 </button>
             </div>
+
+            
 
             <div className="recipe__directions">
                 <h2 className="heading-2">How to cook it</h2>
