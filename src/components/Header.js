@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import Search from './Search';
+import LikeRecipe from './LikeRecipe'
 
 export default class Header extends Component {
+    
+
     render() {
         return (
             <header className="header">
@@ -15,17 +18,14 @@ export default class Header extends Component {
                 </div>
                 <div className="likes__panel">
                     <ul className="likes__list">
-                        <li>
-                            <a className="likes__link" href="#23456">
-                                <figure className="likes__fig">
-                                    <img src="img/test-1.jpg" alt="Test"/>
-                                </figure>
-                                <div className="likes__data">
-                                    <h4 className="likes__name">Pasta with Tomato ...</h4>
-                                    <p className="likes__author">The Pioneer Woman</p>
-                                </div>
-                            </a>
-                        </li>
+                        {this.props.favrecipe.length === 0 ? <p style={{textAlign:'center'}}>There are no Fav</p> :this.props.favrecipe.map((el,index) => {
+                            return <LikeRecipe 
+                            key={index}
+                            currentRecipeFromLiked={this.props.currentRecipeFromLiked}
+                            recipe={el}
+                            />
+                        })}
+                        
                     </ul>
                 </div>
             </div>

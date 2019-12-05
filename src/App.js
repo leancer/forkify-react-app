@@ -9,10 +9,12 @@ class App extends Component{
 
   state = {
     recipes:[],
+    recipe:{},
     showLoader:false,
     id:0,
     showRecipe:true,
-    shoppingList:[]
+    shoppingList:[],
+    favrecipe:[]
   }
 
   onChangeShoppingList(list){
@@ -29,13 +31,17 @@ class App extends Component{
     let q = e.target.elements[0].value;
     axios.get(`https://api.edamam.com/search?q=${q}&app_id=af4b7751&app_key=b84ade4583f2a872db87a3a446fcab84&to=30`).then((res) => {
       this.setState(() => ({recipes:res.data.hits,showLoader:false}))
+      this.setState(() => ({recipe:this.state.recipes[this.state.id]}))
     })
+    
 
     e.target.elements[0].value = '';
   }
 
   onRecipeClick = (id) => {
     this.setState(() => ({id}));
+
+    this.setState(() => ({recipe:this.state.recipes[id]}))
 
     this.setState({
       showRecipe : false
@@ -48,11 +54,35 @@ class App extends Component{
     },100);
   }
 
+  deleteItem = (id) => {
+    this.setState(() => ({shoppingList:this.state.shoppingList.filter(el => el.id !== id)}));
+  }
+
+  componentDidMount(){
+    if(localStorage.getItem('favRecipe')){
+      let favRecipes = JSON.parse(localStorage.getItem('favRecipe'));
+
+      this.setState(() => ({favrecipe:favRecipes}));
+    }
+  }
+
+  handleLiked = (favrecipe) => {
+
+    this.setState({favrecipe});
+
+  }
+
+  currentRecipeFromLiked = (recipe) => {
+    this.setState(() => ({recipe}))
+  }
+
   render(){
     return (
         <div className="container">
           <Header
             onFormSubmit={this.onFormSubmit}
+            favrecipe={this.state.favrecipe}
+            currentRecipeFromLiked={this.currentRecipeFromLiked}
           />
           {<RecipeList 
           recipes={this.state.recipes} 
@@ -61,9 +91,11 @@ class App extends Component{
           onRecipeClick={this.onRecipeClick}
           />}
           <div className="recipe">
-            {(this.state.recipes.length !== 0)&& this.state.showRecipe && 
+            {(Object.keys(this.state.recipe).length !== 0) && this.state.showRecipe && 
             <Recipe 
-            recipe={this.state.recipes[this.state.id]}
+            recipe={this.state.recipe}
+            
+            handleLiked={this.handleLiked}
             onChangeShoppingList={this.onChangeShoppingList.bind(this)}
             />}
           </div>
@@ -74,13 +106,17 @@ class App extends Component{
 
             <ul className="shopping__list">
             {this.state.shoppingList.map((el) => {
-              return <ShoppingList item={el} key={el.id}/>
+              return <ShoppingList 
+              item={el} 
+              key={el.id}
+              deleteItem={this.deleteItem}
+              />
             })
             }
           </ul>
           <div className="copyright">
                 Created on ReactJS . Powered by
-                <a href="http://food2fork.com" target="_blank" className="link">Food2Fork.com</a>.
+                <a href="http://edamam.com" target="_blank" className="link">edamam.com</a>.
             </div>
           </div>
       </div>

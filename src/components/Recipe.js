@@ -108,6 +108,27 @@ export default class Recipe extends Component {
         this.parseIngredients();
     }
 
+    handleLike = (e) => {
+        let favRecipes;
+        if(!localStorage.getItem('favRecipe')){
+
+            favRecipes = [];
+
+            favRecipes.push({recipe:this.props.recipe.recipe});
+
+            localStorage.setItem('favRecipe',JSON.stringify(favRecipes));
+        }else{
+
+            favRecipes = JSON.parse(localStorage.getItem('favRecipe'));
+
+            favRecipes.push({recipe:this.props.recipe.recipe});
+
+            localStorage.setItem('favRecipe',JSON.stringify(favRecipes));
+
+        }
+        this.props.handleLiked(favRecipes);
+    }
+
 
     render() {
         return (
@@ -148,7 +169,7 @@ export default class Recipe extends Component {
                     </div>
 
                 </div>
-                <button className="recipe__love">
+                <button className="recipe__love" onClick={this.handleLike}>
                     <svg className="header__likes">
                         <use href="img/icons.svg#icon-heart-outlined"></use>
                     </svg>
